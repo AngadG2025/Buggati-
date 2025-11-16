@@ -170,3 +170,48 @@ window.addEventListener('scroll', () => {
 window.addEventListener('load', () => {
     document.querySelector('.hero').style.opacity = '1';
 });
+
+// Star Rating Functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('.star');
+    const ratingDisplay = document.getElementById('ratingDisplay');
+    const starRating = document.querySelector('.star-rating');
+    
+    if (stars.length > 0 && ratingDisplay && starRating) {
+        let currentRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                currentRating = rating;
+                updateRating(rating);
+            });
+
+            star.addEventListener('mouseenter', () => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                highlightStars(rating);
+            });
+        });
+
+        // Reset stars on mouse leave
+        starRating.addEventListener('mouseleave', () => {
+            highlightStars(currentRating);
+        });
+
+        function updateRating(rating) {
+            currentRating = rating;
+            ratingDisplay.textContent = rating;
+            highlightStars(rating);
+        }
+
+        function highlightStars(rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+    }
+});
