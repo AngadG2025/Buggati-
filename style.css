@@ -687,6 +687,14 @@ body {
     color: var(--text-gray);
 }
 
+.footer-bottom .disclaimer {
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    opacity: 0.8;
+    font-style: italic;
+    line-height: 1.5;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-menu {
