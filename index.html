@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bugatti - Art, Forme, Technique</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -82,6 +83,10 @@
                             <li><strong>Top Speed:</strong> 445 km/h (with Speed Key)</li>
                             <li><strong>0-100 km/h:</strong> 2.0 seconds</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$4,800,000 USD</span>
+                            <span class="price-aed">17,616,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Tourbillon" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -102,6 +107,10 @@
                             <li><strong>Top Speed:</strong> 420 km/h (limited)</li>
                             <li><strong>0-100 km/h:</strong> 2.4 seconds</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$3,000,000 USD</span>
+                            <span class="price-aed">11,010,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Chiron" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -122,6 +131,10 @@
                             <li><strong>Top Speed:</strong> 407 km/h</li>
                             <li><strong>0-100 km/h:</strong> 2.5 seconds</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$2,000,000 USD</span>
+                            <span class="price-aed">7,340,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Veyron" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -142,6 +155,10 @@
                             <li><strong>Top Speed:</strong> 380 km/h</li>
                             <li><strong>Lateral G:</strong> 1.6g</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$5,800,000 USD</span>
+                            <span class="price-aed">21,286,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Divo" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -162,6 +179,10 @@
                             <li><strong>Production:</strong> 10 units</li>
                             <li><strong>0-100 km/h:</strong> 2.4 seconds</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$8,000,000 USD</span>
+                            <span class="price-aed">29,360,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Centodieci" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -182,6 +203,10 @@
                             <li><strong>Weight:</strong> 1,240 kg</li>
                             <li><strong>Power-to-Weight:</strong> 0.67 kg/PS</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$4,000,000 USD</span>
+                            <span class="price-aed">14,680,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Bolide" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -202,6 +227,10 @@
                             <li><strong>Production:</strong> 99 units</li>
                             <li><strong>Top Speed:</strong> 420 km/h</li>
                         </ul>
+                        <div class="model-price">
+                            <span class="price-usd">$5,000,000 USD</span>
+                            <span class="price-aed">18,350,000 AED</span>
+                        </div>
                         <a href="https://www.google.com/search?q=Bugatti+Mistral" target="_blank" class="model-link">Learn More on Google →</a>
                     </div>
                 </div>
@@ -305,14 +334,29 @@
             <h2 class="section-title">Rate This Website</h2>
             <div class="rating-container">
                 <p class="rating-description">How would you rate your experience?</p>
-                <div class="star-rating">
-                    <span class="star" data-rating="1">★</span>
-                    <span class="star" data-rating="2">★</span>
-                    <span class="star" data-rating="3">★</span>
-                    <span class="star" data-rating="4">★</span>
-                    <span class="star" data-rating="5">★</span>
-                </div>
-                <p class="rating-value">Your rating: <span id="ratingDisplay">0</span> / 5</p>
+                <form id="reviewForm" class="review-form">
+                    <div class="star-rating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <p class="rating-value">Your rating: <span id="ratingDisplay">0</span> / 5</p>
+                    
+                    <div class="form-group">
+                        <input type="text" id="reviewerName" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="reviewerEmail" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="reviewText" placeholder="Your Review (optional)" rows="4"></textarea>
+                    </div>
+                    <input type="hidden" id="reviewRating" value="0" required>
+                    <button type="submit" class="submit-review-button" id="submitReviewBtn">Submit Review</button>
+                    <p id="reviewMessage" class="review-message"></p>
+                </form>
             </div>
         </div>
     </section>

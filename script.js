@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stars = document.querySelectorAll('.star');
     const ratingDisplay = document.getElementById('ratingDisplay');
     const starRating = document.querySelector('.star-rating');
+    const reviewRatingInput = document.getElementById('reviewRating');
     
     if (stars.length > 0 && ratingDisplay && starRating) {
         let currentRating = 0;
@@ -201,6 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function updateRating(rating) {
             currentRating = rating;
             ratingDisplay.textContent = rating;
+            if (reviewRatingInput) {
+                reviewRatingInput.value = rating;
+            }
             highlightStars(rating);
         }
 
@@ -213,5 +217,134 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    }
+
+    // Initialize EmailJS
+    // IMPORTANT: Replace these with your EmailJS credentials
+    // Sign up at https://www.emailjs.com/ to get your service ID, template ID, and public key
+    // Then update the values below:
+    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+
+    // Only initialize if credentials are provided
+    if (EMAILJS_SERVICE_ID !== 'YOUR_SERVICE_ID' && EMAILJS_TEMPLATE_ID !== 'YOUR_TEMPLATE_ID' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+
+    // Review Form Submission
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewMessage = document.getElementById('reviewMessage');
+    
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const reviewerName = document.getElementById('reviewerName').value.trim();
+            const reviewerEmail = document.getElementById('reviewerEmail').value.trim();
+            const reviewText = document.getElementById('reviewText').value.trim();
+            const rating = document.getElementById('reviewRating').value;
+            
+            // Validate rating
+            if (rating === '0' || !rating) {
+                showMessage('Please select a rating before submitting.', 'error');
+                return;
+            }
+            
+            // Validate email
+            if (!reviewerEmail || !isValidEmail(reviewerEmail)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            // Validate name
+            if (!reviewerName) {
+                showMessage('Please enter your name.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitReviewBtn');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            try {
+                // Check if EmailJS is configured
+                if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID' || EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID' || EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+                    // If EmailJS is not configured, show demo message
+                    console.log('Review submitted:', {
+                        name: reviewerName,
+                        email: reviewerEmail,
+                        rating: rating,
+                        review: reviewText || 'No review text provided'
+                    });
+                    showMessage('Review received! (EmailJS not configured - please set up EmailJS credentials in script.js to enable email notifications)', 'success');
+                    reviewForm.reset();
+                    // Reset rating display
+                    const ratingDisplayEl = document.getElementById('ratingDisplay');
+                    const reviewRatingInputEl = document.getElementById('reviewRating');
+                    const starsEl = document.querySelectorAll('.star');
+                    if (ratingDisplayEl) {
+                        ratingDisplayEl.textContent = '0';
+                    }
+                    if (reviewRatingInputEl) {
+                        reviewRatingInputEl.value = '0';
+                    }
+                    starsEl.forEach(star => star.classList.remove('active'));
+                } else {
+                    // Send email using EmailJS
+                    const templateParams = {
+                        reviewer_name: reviewerName,
+                        reviewer_email: reviewerEmail,
+                        rating: rating,
+                        review_text: reviewText || 'No review text provided',
+                        date: new Date().toLocaleString()
+                    };
+                    
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+                    
+                    showMessage('Thank you for your review! You will receive a confirmation email shortly.', 'success');
+                    reviewForm.reset();
+                    // Reset rating display
+                    const ratingDisplayEl = document.getElementById('ratingDisplay');
+                    const reviewRatingInputEl = document.getElementById('reviewRating');
+                    const starsEl = document.querySelectorAll('.star');
+                    if (ratingDisplayEl) {
+                        ratingDisplayEl.textContent = '0';
+                    }
+                    if (reviewRatingInputEl) {
+                        reviewRatingInputEl.value = '0';
+                    }
+                    starsEl.forEach(star => star.classList.remove('active'));
+                }
+            } catch (error) {
+                console.error('Error sending review:', error);
+                showMessage('There was an error submitting your review. Please try again later.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    }
+    
+    function showMessage(message, type) {
+        if (reviewMessage) {
+            reviewMessage.textContent = message;
+            reviewMessage.className = `review-message ${type}`;
+            reviewMessage.style.display = 'block';
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    reviewMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
+    }
+    
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 });
